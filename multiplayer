@@ -1,0 +1,286 @@
+import random
+import re
+
+# A Function to get the players name in 1 player mode
+    # Promp user for name and capitalize the first letter
+    # Ensure name is only letters
+
+def name():
+    global name
+    global alph
+    name = input("\nWhat is your name? ").title()
+    alph = "^[a-zA-Z]*$"
+    while True:
+        if re.match(alph, name):
+            break
+        else:
+            name = input("\nPlease enter your name: ").title()
+
+    print("\nHi {}, welcome to the greatest dice game in the world!".format(name))
+    return
+
+# A Function to decide if game is 1- 2 players and get the names of players if 2
+    # Prompt user for number of players
+    # Prompt user for players names and capitalize the first letter of each name
+    # Welcome players by name
+    # Validate responses
+
+def players():
+    global player1
+    global player2
+    global nop
+    alph = "^[a-z A-Z]*$"
+    while True:
+        try:
+            nop = int(input("\nHow many players will be playing (1-2)? "))
+            while True:
+                if nop == 1:
+                    name()
+                    break
+                    
+                elif nop == 2:
+                    while True:
+                        names = input("\nPlease type the players names seperated by a space: ").title()
+                        if re.match(alph, names):
+                            break
+                        else:
+                            names = input("\nPlease enter the names seperated by a space: ").title()
+                            
+                    player1 = names.split(" ")[0]
+                    player2 = names.split(" ")[1]
+                    print("\n{} and {}, welcome to the greatest dice game in the world!".format(player1, player2))
+                    break
+                else:
+                    print("\nINVALID")
+                    break
+
+            break
+        except ValueError:
+            print("\nInvalid Response")
+
+    return
+                
+# A function to roll the dice
+    # Set the count of the dice and total to 0
+    # If 10 or less dice are chosen
+    # While x (the number of dice) is greater than 0
+    # Choose a random number from 1-6 for each die and print each die
+    # Count, counts the dice for printing the die rolled
+    # x counts down each roll until 0 is reached
+    # If more than 10 dice are rolled
+    # reapeat steps without printing dice
+    # show the total sum of the numbers rolled
+
+def roll(x):
+    global total
+    count, total = 0, 0
+    if x <= 10:
+        while x > 0:
+            die = random.randint(1, 6)
+            count += 1
+            print("\nDie #{} is {}".format(count, die))
+            total += die 
+            x -= 1
+    else:
+        while x > 0:
+            die = random.randint(1, 6)
+            count += 1
+            total += die 
+            x -= 1
+    print("\nThe total dice roll is equal to: {}".format(total))
+    return
+
+# A function to calculate how many number the prediction was off by
+    # if x is less than the total
+    # Subtract x from the total
+    # Else, subtract the total from x
+
+def difference(x):
+    if x <= total:
+        return total - x
+    else:
+        return x - total
+
+# A function for 1 player game play
+    # Prompt user for desired dice to be rolled
+    # while less than 1, ask them to choose atleast 1
+    # Validate response
+    # Prompt user for a prediction
+    # Validate prediction according to chossen dice
+    # Roll the dice
+    # If user is correct, congragulate them
+    # Else, tell them how far they were off
+
+def game1():
+    while True:
+        try:
+            dice = int(input("\nHow many dice would you like to roll? "))
+            while dice <= 0:
+                print("\n{}, please choose at least 1 die.".format(name))
+                dice = int(input("\nHow many dice would you like to roll? "))
+            break
+        except ValueError:
+            print("\nInvalid Response")
+
+    while True:
+        try:
+            guess = int(input("\nWhat do you think the total on the dice will be equal to? "))
+            while True:
+                lowest = dice * 1
+                highest = dice * 6
+                if lowest <= guess <= highest:
+                    break
+                elif ((lowest <= guess <= highest) and (dice == 1)):
+                    print("\n{} is not a possible comination with {} die.".format(guess, dice))
+                    guess = int(input("\nPlease select a number between {} and {}: ".format(lowest, highest)))
+                else:
+                    print("\n{} is not a possible comination with {} dice.".format(guess, dice))
+                    guess = int(input("\nPlease select a number between {} and {}: ".format(lowest, highest)))
+            break
+        except ValueError:
+            print("\nInvalid Response")
+                
+    roll(dice)
+
+    if guess == total:
+        print("\nCongratulations, you guessed the right number!!")
+    else:
+        print("\nSorry you were off by {}".format(difference(guess)))
+    return
+
+# A function for 2 player game play
+    # Prompt user for desired dice to be rolled
+    # while less than 1, ask them to choose atleast 1
+    # Validate response
+    # Prompt both users for a prediction
+    # If user chooses the same as other user, ask them to change their guess
+    # Validate prediction according to chossen dice
+    # Roll the dice
+    # If a user is correct, congragulate them and tell the other how far they were off
+    # Else, tell them how far they were off and who was closest
+    # If they were the same number away, tell them that they lose equally
+
+def game2():
+    while True:
+        try:
+            dice = int(input("\nHow many dice would you two like to roll? "))
+            while dice <= 0:
+                print("\n{} and {}, please choose at least 1 die.".format(player1, player2))
+                dice = int(input("\nHow many dice would you two like to roll? "))
+            break
+        except ValueError:
+            print("\nInvalid Response")
+
+    while True:
+        try:
+            guess1 = int(input("\n{}, what do you think the total on the dice will be equal to? ".format(player1)))
+            while True:
+                lowest = dice * 1
+                highest = dice * 6
+                if lowest <= guess1 <= highest:
+                    break
+                elif ((lowest <= guess1 <= highest) and (dice == 1)):
+                    print("\n{} is not a possible comination with {} die.".format(guess1, dice))
+                    guess1 = int(input("\nPlease select a number between {} and {}: ".format(lowest, highest)))
+                else:
+                    print("\n{} is not a possible comination with {} dice.".format(guess1, dice))
+                    guess1 = int(input("\nPlease select a number between {} and {}: ".format(lowest, highest)))
+            break
+        except ValueError:
+            print("\nInvalid Response")
+
+    while True:
+        try:
+            guess2 = int(input("\n{}, what do you think the total on the dice will be equal to? ".format(player2)))
+            while True:
+                lowest = dice * 1
+                highest = dice * 6
+                if guess2 == guess1:
+                    print("\n{}, you are not allowed to choose the same number as {}.".format(player2, player1))
+                    guess2 = int(input("\nPlease select a different number between {} and {}: ".format(lowest, highest)))
+                elif lowest <= guess2 <= highest:
+                    break
+                elif ((lowest <= guess2 <= highest) and (dice == 1)):
+                    print("\n{} is not a possible comination with {} die.".format(guess2, dice))
+                    guess2 = int(input("\nPlease select a number between {} and {}: ".format(lowest, highest)))
+                else:
+                    print("\n{} is not a possible comination with {} dice.".format(guess2, dice))
+                    guess2 = int(input("\nPlease select a number between {} and {}: ".format(lowest, highest)))
+            break
+        except ValueError:
+            print("\nInvalid Response")
+
+    roll(dice)
+
+    if guess1 == total:
+        print("\nWe have a WINNER!")
+        print("\nCongratulations {}, you guessed the right number!!".format(player1))
+        print("\nSorry {}, you were off by {}.".format(player2, difference(guess2)))
+    elif guess2 == total:
+        print("\nWe have a WINNER!")
+        print("\nCongratulations {}, you guessed the right number!!".format(player2))
+        print("\nSorry {}, you were off by {}.".format(player1, difference(guess1)))
+    elif guess1 != total and guess2 != total:
+        print("\nSorry {}, you were off by {} and {} was off by {}.".format(player1, difference(guess1), player2, difference(guess2)))
+        if difference(guess1) < difference(guess2):
+            print("\n{} was closest to the correct number!".format(player1))
+        elif difference(guess1) == difference(guess2):
+            print("\n{} and {}, you were both only {} away from the right answer, so you both lose equally!".format(player1, player2, difference(guess1)))
+        else:
+            print("\n{} was closest to the correct number!".format(player2))
+    return
+
+# A function to repeat in 1 player mode
+    # Ask user if they would like to play again
+    # If no, thank them for playing
+    # If yes, play again
+    # Else, ask again
+
+def repeat1():
+    repeat = input("\n{}, would you like to play again? ".format(name)).upper()
+
+    while True:
+        if repeat == "YES":
+            game1()
+            repeat = input("\n{}, would you like to play again? ".format(name)).upper()
+        elif repeat == "NO":
+            print("\nThank you for playing, I hope you have a great day {}!".format(name))
+            break
+        else:
+            repeat = input("\n{}, would you like to play again? ".format(name)).upper()
+    return
+
+# A function to repeat in 2 player mode
+    # Ask users if they would like to play again
+    # If no, thank them for playing
+    # If yes, play again
+    # Else, ask again
+
+def repeat2():
+    repeat = input("\n{}, would you and {} like to play again? ".format(player1, player2)).upper()
+
+    while True:
+        if repeat == "YES":
+            game2()
+            repeat = input("\n{}, would you and {} like to play again? ".format(player1, player2)).upper()
+        elif repeat == "NO":
+            print("\nThank you for playing, I hope you all have a great day!")
+            break
+        else:
+            repeat = input("\n{}, would you and {} like to play again? ".format(player1, player2)).upper()
+    return
+
+
+# Run players function
+
+players()
+
+# If 1 player, run game1 and repeat1 functions
+# Else, run game2 and repeat2 functions
+
+if nop == 1:
+    game1()
+    repeat1()
+else:
+    game2()
+    repeat2()
